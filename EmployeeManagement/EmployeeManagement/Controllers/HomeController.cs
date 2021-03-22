@@ -46,7 +46,7 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
         [AllowAnonymous]
-        public ViewResult Details(string id)
+        public ViewResult Details(int? id)
         {
             //throw new Exception("Unhandled Exception");
 
@@ -57,13 +57,12 @@ namespace EmployeeManagement.Controllers
             logger.LogError("Error Log");
             logger.LogCritical("Critical Log");
 
-            int employeeId = Convert.ToInt32(protector.Unprotect(id));
 
-            Employee employee = _employeeRepository.GetEmployee(employeeId);
+            Employee employee = _employeeRepository.GetEmployee(id.Value);
             if (employee == null)
             {
                 Response.StatusCode = 404;
-                return View("EmployeeNotFound", employeeId);
+                return View("EmployeeNotFound", id.Value);
             }
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel
             {
