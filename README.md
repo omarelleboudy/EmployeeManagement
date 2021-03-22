@@ -19,3 +19,13 @@ This was a project I made while self studying ASP.NET Core, in order to enhnace 
 
 ## Preview of the project:
 S O O N.
+
+### Setup Guide
+This guide assumes that all required NuGET packages are already installed. **If you are not sure, run a Clean and Rebuild before starting.**
+
+1. Make sure SQL Server is set up and ready for new databases instances, and set up your connection string in appsettings.
+2. Migrations needed to build up the database are already there (check the folder name `Migrations` in the root project directory), launch the Package Manager Console from `Tools > NuGET Package Manager > Package Manager Console`
+3. Run the command `Update-Database`
+4. Check SQLServer to see if a database was added.
+5. Make sure the `Migration History` table was built to, if not, be sure to manually build it to avoid future migration problems.
+6. Clean, Rebuild, then Run.
