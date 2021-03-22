@@ -20,7 +20,8 @@ This was a project I made while self studying ASP.NET Core, in order to enhnace 
 ## Preview of the project:
 S O O N.
 
-### Setup Guide
+## Setup Guide
+
 This guide assumes that all required NuGET packages are already installed. **If you are not sure, run a Clean and Rebuild before starting.**
 
 1. Make sure SQL Server is set up and ready for new databases instances, and set up your connection string in appsettings.
