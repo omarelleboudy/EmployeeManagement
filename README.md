@@ -28,6 +28,12 @@ This was a project I made while self studying ASP.NET Core, in order to enhnace 
 
 ![AccessDenied](https://i.imgur.com/EtudZmA.png)
 
+![CreateEmployee](https://i.imgur.com/3JTJqGj.png)
+
+![EmployeeCreate](https://i.imgur.com/uPWec8Y.png)
+
+![EmployeeCreatedView](https://i.imgur.com/ejKirB4.png)
+
 
 ## Setup Guide
 
