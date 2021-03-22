@@ -18,7 +18,7 @@ This was a project I made while self studying ASP.NET Core, in order to enhnace 
 - Account Lockout and general security.
 
 ## Preview of the project:
-![HomePage](https://imgur.com/a/gu6Olzb)
+![HomePage](https://i.imgur.com/HXU9F3a.png)
 
 ## Setup Guide
 
