@@ -11,6 +11,7 @@ This was a project I made while self studying ASP.NET Core, in order to enhnace 
 ## Features:
 
 - Full Account Autherntication and Control (Register, Login, Account confirmation, Account recovery with tokens) using ASP.net Identity.
+*Confirmation and reset emails are logged, rather than sent. Will implement later*
 - Login with Google Account.
 - Login with Facebook Account.
 - Role based Authorization.
