@@ -20,6 +20,15 @@ This was a project I made while self studying ASP.NET Core, in order to enhnace 
 ## Preview of the project:
 ![HomePage](https://i.imgur.com/HXU9F3a.png)
 
+![Login](https://i.imgur.com/FQJPtXo.png)
+
+![ClaimBasedAuthorization](https://i.imgur.com/Xquxc6R.png)
+
+![ClaimBasedAuthorization](https://i.imgur.com/znGbemA.png)
+
+![AccessDenied](https://i.imgur.com/EtudZmA.png)
+
+
 ## Setup Guide
 
 This guide assumes that all required NuGET packages are already installed. **If you are not sure, run a Clean and Rebuild before starting.**
