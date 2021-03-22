@@ -104,3 +104,10 @@ D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\obj\Debug\
 D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.Google.dll
 D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.Facebook.dll
 D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\obj\Debug\netcoreapp3.1\Razor\Views\Account\ConfirmEmail.cshtml.g.cs
+D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\obj\Debug\netcoreapp3.1\Razor\Views\Account\ForgotPassword.cshtml.g.cs
+D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\obj\Debug\netcoreapp3.1\Razor\Views\Account\ForgotPasswordConfirmation.cshtml.g.cs
+D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\obj\Debug\netcoreapp3.1\Razor\Views\Account\ResetPassword.cshtml.g.cs
+D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\obj\Debug\netcoreapp3.1\Razor\Views\Account\ResetPasswordConfirmation.cshtml.g.cs
+D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\obj\Debug\netcoreapp3.1\Razor\Views\Account\ChangePassword.cshtml.g.cs
+D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\obj\Debug\netcoreapp3.1\Razor\Views\Account\ChangePasswordConfirmation.cshtml.g.cs
+D:\EmployeeManagementProjectASP\EmployeeManagement\EmployeeManagement\obj\Debug\netcoreapp3.1\Razor\Views\Account\AccountLocked.cshtml.g.cs

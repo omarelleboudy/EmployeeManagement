@@ -1,6 +1,8 @@
 ﻿using EmployeeManagement.Models;
+using EmployeeManagement.Security;
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,24 +21,32 @@ namespace EmployeeManagement.Controllers
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IWebHostEnvironment hostingEnvironment;
         private readonly ILogger logger;
+        private readonly IDataProtector protector;
 
         public HomeController(IEmployeeRepository employeeRepository,
                               IWebHostEnvironment hostingEnvironment,
-                              ILogger<HomeController> logger)
+                              ILogger<HomeController> logger,
+                              IDataProtectionProvider dataProtectionProvider,
+                              DataProtectionPurposeStrings dataProtectionPurposeStrings)
         {
 
             _employeeRepository = employeeRepository;
             this.hostingEnvironment = hostingEnvironment;
             this.logger = logger;
+            protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
         }
         [AllowAnonymous]
         public ViewResult Index()
         {
-            var model = _employeeRepository.GetAllEmployees();
+            var model = _employeeRepository.GetAllEmployees()
+                .Select(e=> {
+                    e.EncryptedId = protector.Protect(e.Id.ToString());
+                    return e;
+                });
             return View(model);
         }
         [AllowAnonymous]
-        public ViewResult Details(int? id)
+        public ViewResult Details(string id)
         {
             //throw new Exception("Unhandled Exception");
 
@@ -47,11 +57,13 @@ namespace EmployeeManagement.Controllers
             logger.LogError("Error Log");
             logger.LogCritical("Critical Log");
 
-            Employee employee = _employeeRepository.GetEmployee(id.Value);
+            int employeeId = Convert.ToInt32(protector.Unprotect(id));
+
+            Employee employee = _employeeRepository.GetEmployee(employeeId);
             if (employee == null)
             {
                 Response.StatusCode = 404;
-                return View("EmployeeNotFound", id.Value);
+                return View("EmployeeNotFound", employeeId);
             }
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel
             {

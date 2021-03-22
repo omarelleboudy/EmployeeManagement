@@ -40,9 +40,16 @@ namespace EmployeeManagement
                 options.Password.RequiredUniqueChars = 2;
 
                 options.SignIn.RequireConfirmedEmail = true;
+
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
+
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+                   o.TokenLifespan = TimeSpan.FromHours(5));
+
 
             services.AddMvcCore(options =>
             {
@@ -84,6 +91,7 @@ namespace EmployeeManagement
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
             services.AddSingleton<IAuthorizationHandler, CanEditOnlyOtherAdminRolesAndClaimsHandler>();
             services.AddSingleton<IAuthorizationHandler, SuperAdminHandler>();
+            services.AddSingleton<DataProtectionPurposeStrings>();
             services.AddControllersWithViews();
         }
 

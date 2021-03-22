@@ -26,6 +26,132 @@ namespace EmployeeManagement.Controllers
             this.signInManager = signInManager;
             this.logger = logger;
         }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Login");
+                }
+
+                // ChangePasswordAsync changes the user password
+                var result = await userManager.ChangePasswordAsync(user,
+                    model.CurrentPassword, model.NewPassword);
+
+                // The new password did not meet the complexity rules or
+                // the current password is incorrect. Add these errors to
+                // the ModelState and rerender ChangePassword view
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View();
+                }
+
+                // Upon successfully changing the password refresh sign-in cookie
+                await signInManager.RefreshSignInAsync(user);
+                return View("ChangePasswordConfirmation");
+            }
+
+            return View(model);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Find the user by email
+                var user = await userManager.FindByEmailAsync(model.Email);
+                // If the user is found AND Email is confirmed
+                if (user != null && await userManager.IsEmailConfirmedAsync(user))
+                {
+                    // Generate the reset password token
+                    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+                    // Build the password reset link
+                    var passwordResetLink = Url.Action("ResetPassword", "Account",
+                            new { email = model.Email, token = token }, Request.Scheme);
+
+                    // Log the password reset link
+                    logger.Log(LogLevel.Warning, passwordResetLink);
+
+                    // Send the user to Forgot Password Confirmation view
+                    return View("ForgotPasswordConfirmation");
+                }
+                // To avoid account enumeration and brute force attacks, don't
+                // reveal that the user does not exist or is not confirmed
+                return View("ForgotPasswordConfirmation");
+            }
+            return View(model);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            // If password reset token or email is null, most likely the
+            // user tried to tamper the password reset link
+            if (token == null || email == null)
+            {
+                ModelState.AddModelError("", "Invalid password reset token");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Find the user by email
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                if (user != null)
+                {
+                    // reset the user password
+                    var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        if (await userManager.IsLockedOutAsync(user))
+                        {
+                            await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+                        }
+                        return View("ResetPasswordConfirmation");
+                    }
+                    // Display validation errors. For example, password reset token already
+                    // used to change the password or password complexity rules not met
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View(model);
+                }
+
+                // To avoid account enumeration and brute force attacks, don't
+                // reveal that the user does not exist
+                return View("ResetPasswordConfirmation");
+            }
+            // Display validation errors if model state is not valid
+            return View(model);
+        }
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -132,16 +258,21 @@ namespace EmployeeManagement.Controllers
             {
                 var user = await userManager.FindByEmailAsync(model.Email);
                 if (user != null && !user.EmailConfirmed
-                                 && (await userManager.CheckPasswordAsync(user,model.Password)))
+                                 && (await userManager.CheckPasswordAsync(user, model.Password)))
                 {
                     ModelState.AddModelError(string.Empty, "Email not confirmed yet");
                     return View(model);
                 }
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password,
+                                                                     model.RememberMe, true);
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
                     else return RedirectToAction("index", "home");
+                }
+                if (result.IsLockedOut)
+                {
+                    return View("AccountLocked");
                 }
                 ModelState.AddModelError(string.Empty, "Email or Password is incorrect.");
             }
@@ -153,7 +284,7 @@ namespace EmployeeManagement.Controllers
         public IActionResult ExternalLogin(string provider, string returnUrl)
         {
             var redirectUrl = Url.Action("ExternalLoginCallback", "Account",
-                                        new { ReturnUrl = returnUrl});
+                                        new { ReturnUrl = returnUrl });
             var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
         }
